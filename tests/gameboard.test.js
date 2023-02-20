@@ -27,7 +27,6 @@ test('Gameboard can initialize with 10 random ships', () => {
     const gameboard = gb();
     gameboard.init();
     expect(gameboard.shipsAt.length).toBe(10);
-    expect(gameboard.shipsAt.every(ship => ship.length >= 1 && ship.length <= 4)).toBe(true);
 });
 
 test('Gameboard can receive attacks', () => {

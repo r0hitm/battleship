@@ -1,67 +1,139 @@
 /**
  * BattleShip Game
- * 
+ *
  * Author: Rohit Mehta
- * 
- * 
+ *
+ *
  * Gameboard Factory Function
  * @returns {object} - gameboard object
- * 
+ *
  * A gameboard is a 10x10 grid of squares, where each square is either empty or has a ship.
  * A ship can be of length 1, 2, 3, or 4. A ship can be placed horizontally or vertically.
  * In this implementation, the gameboard only stores the ships, not the empty squares.
  * Note 1: Always place ships from left to right or top to bottom.
  * Note 2: Ships cannot overlap.
- * 
+ *
  * Each ship is stored as an object with the following properties:
  *  - ship: the ship object
  * - x: the x coordinate of the ship's leftmost square
  * - y: the y coordinate of the ship's topmost square
  * - isHorizontal: true if the ship is horizontal, false if vertical
- * 
+ *
  */
-import Ship from './ship.js';
+import Ship from "./ship.js";
 
 const Gameboard = _ => {
-    const shipsAt = [];     // Array of ships on the gameboard
-    let missedShots = [];   // Shots that missed all ships
-    let hitShots = [];      // Shots that hit a ship
+    const shipsAt = []; // Array of ships on the gameboard
+    let missedShots = []; // Shots that missed all ships
+    let hitShots = []; // Shots that hit a ship
 
     // Public methods
+    // Place a ship on the gameboard
+    // Return true if ship was placed, false otherwise
     const placeShip = (ship, x, y, isHorizontal) => {
-        // Check if ship can be placed at the given coordinate
-        // If ship can be placed, add it to shipsAt
-        // If ship cannot be placed, return false
+        console.assert(
+            typeof ship === "object" && ship !== null,
+            "Ship must be an object"
+        );
+        console.assert(
+            typeof ship.length === "number" && ship.length > 0,
+            "Ship length must be a positive number"
+        );
+        console.assert(
+            typeof ship.hit === "function" && ship.hasOwnProperty("hit"),
+            "Ship must have a hit() method"
+        );
+        console.assert(
+            typeof ship.isSunk === "function" && ship.hasOwnProperty("isSunk"),
+            "Ship must have an isSunk() method"
+        );
+        console.assert(x >= 0 && x < 10, "x must be between 0 and 9");
+        console.assert(
+            isHorizontal === true || isHorizontal === false,
+            "isHorizontal must be true or false"
+        );
+
+        if (!canPlaceShip(x, y)) {
+            return false;
+        }
+        shipsAt.push({ ship, x, y, isHorizontal });
+        return true;
     };
 
+    // Receive an attack at the given coordinate
+    // If there is a ship at the given coordinate, call the ship's hit method and return true
+    // If there is no ship at the given coordinate, return false
     const receiveAttack = (x, y) => {
-        // Check if there is a ship at the given coordinate
-        // If there is a ship, call the ship's hit method
-        // If there is no ship, do nothing
+        console.assert(x >= 0 && x < 10, "x must be between 0 and 9");
+        console.assert(y >= 0 && y < 10, "y must be between 0 and 9");
+
+        const ship = getShipAt(x, y);
+        if (ship) {
+            ship.hit();
+            hitShots.push([x, y]);
+            return true;
+        } else {
+            missedShots.push([x, y]);
+            return false;
+        }
     };
 
+    // Return true if all ships have been sunk, false otherwise
     const allShipsSunk = () => {
-        // Check if all ships have been sunk
-        // Return true if all ships have been sunk, false otherwise
+        return shipsAt.every(s => s.ship.isSunk());
     };
 
     const getMissedShots = _ => missedShots;
     const getHitShots = _ => hitShots;
 
+    // Initialize the gameboard with 4 ships of length 1, 3 ships of length 2, 2 ships of length 3, and 1 ship of length 4
     const init = _ => {
-        // Place 4 ships of length 1, 3 ships of length 2, 2 ships of length 3, and 1 ship of length 4
-        // Place ships randomly on the gameboard
+        const ships = [
+            Ship(4),
+            Ship(3),
+            Ship(3),
+            Ship(2),
+            Ship(2),
+            Ship(2),
+            Ship(1),
+            Ship(1),
+            Ship(1),
+            Ship(1),
+        ];
+        // Randomly place ships on the gameboard
+        for (let i = 0; i < ships.length; i++) {
+            const ship = ships[i];
+            let x, y, isHorizontal;
+            do {
+                x = Math.floor(Math.random() * 10);
+                y = Math.floor(Math.random() * 10);
+                isHorizontal = Math.random() < 0.5;
+            } while (!placeShip(ship, x, y, isHorizontal));
+        }
     };
 
     // Private methods
+    // Return the ship at the given coordinate
     const getShipAt = (x, y) => {
-        // Return the ship at the given coordinate
-        // If there is no ship at the given coordinate, return false
+        for (let i = 0; i < shipsAt.length; i++) {
+            const s = shipsAt[i];
+            if (s.isHorizontal) {
+                if (s.y === y && s.x <= x && x < s.x + s.ship.length) {
+                    return s.ship;
+                }
+            } else {
+                if (s.x === x && s.y <= y && y < s.y + s.ship.length) {
+                    return s.ship;
+                }
+            }
+        }
+        return null;
     };
 
-    const canPlaceShip = (ship, x, y, isHorizontal) => {
-        // Check if ship can be placed at the given coordinate
-        // Return true if ship can be placed, false otherwise
+    // Return true if ship can be placed at the given coordinate, false otherwise
+    const canPlaceShip = (x, y) => {
+        const ship = getShipAt(x, y);
+        return ship === null;
     };
 
     return {
@@ -72,9 +144,9 @@ const Gameboard = _ => {
         getHitShots,
         init,
         // For testing purposes only
-        getShipAt,
-        canPlaceShip,
-        shipsAt
+        // getShipAt,
+        // canPlaceShip,
+        // shipsAt,
     };
 };
 

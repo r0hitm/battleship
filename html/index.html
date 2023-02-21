@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship Game</title>
+
+    <!-- for testing -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Battleship</h1>
+        <div class="bar" id="status"></div> <!-- Status of the game and messages for user -->
+    </header>
+    <div class="play-area">
+        <div class="wrapper">
+            <div class="container" id="player"></div> <!-- Player's board -->
+            <p class="text">Your Board</p>
+            <button id="randomize" type="button">Randomize</button>
+        </div>
+        <div class="wrapper">
+            <div class="container" id="computer"></div> <!-- Computer's board -->
+            <p class="text">Computer's Board</p>
+        </div>
+    </div>
+    <div class="bar" id="controls">
+        <button id="start">Start Game</button>
+        <button id="reset">Reset Game</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2023</p>
+        <p>Created by <a href="https://github.com/r0hitm">Rohit Mehta</a></p>
+    </footer>
+</body>
+
+</html>

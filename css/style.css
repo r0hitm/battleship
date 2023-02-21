@@ -1,7 +1,23 @@
+
+/* Open Sans Font */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 :root {
     --sq-size: 30px;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    /* height: 90vh; */
+    font: 15px 'Open Sans', sans-serif;
+    padding: 2rem;
+}
+
+/* Board */
 .player {
     position: relative;
 }
@@ -9,7 +25,8 @@
 .board {
     display: grid;
     grid: repeat(10, var(--sq-size)) / repeat(10, var(--sq-size));
-    width: fit-content;
+    width: 300px;
+    height: 300px;
     border: 1px solid black;
     background: #55f4;
     cursor:pointer;
@@ -42,4 +59,50 @@
 
 .miss {
     background: url("o.png");
+}
+
+/* ---------------- */
+
+header {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+h1 {
+    position: relative;
+    top: -10px;
+}
+
+#status {
+    display: flex;
+    align-items: center;
+    background: #55f4;
+    width: 300px;
+    height: 2rem;
+}
+
+button {
+    padding: 5px 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: #55f4;
+    cursor: pointer;
+}
+
+.play-area {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+
 }

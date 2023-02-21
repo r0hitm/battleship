@@ -1,0 +1,45 @@
+:root {
+    --sq-size: 30px;
+}
+
+.player {
+    position: relative;
+}
+
+.board {
+    display: grid;
+    grid: repeat(10, var(--sq-size)) / repeat(10, var(--sq-size));
+    width: fit-content;
+    border: 1px solid black;
+    background: #55f4;
+    cursor:pointer;
+}
+
+.square {
+    border: 1px solid black;
+}
+
+.square:hover:not(.ship, .miss) {
+    background: #44fa;
+}
+
+.ship {
+    background: #555;
+    border: none;
+}
+
+.miss, .hit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.hit {
+    background: url("x.png");
+}
+
+.miss {
+    background: url("o.png");
+}

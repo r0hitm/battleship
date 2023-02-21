@@ -124,14 +124,16 @@ const Gameboard = _ => {
         for (let i = 0; i < boardArray.length; i++) {
             const square = document.createElement("div");
             square.classList.add("square");
+            square.setAttribute("data-index", i);
+
             if (boardArray[i] === "X") {
                 square.classList.add("hit");
             } else if (boardArray[i] === "O") {
                 square.classList.add("miss");
-            }
-            if (showShips && boardArray[i] === "ship") {
+            } else if (showShips && boardArray[i] === "ship") {
                 square.classList.add("ship");
             }
+
             board.appendChild(square);
         }
         return board;
@@ -186,11 +188,11 @@ const Gameboard = _ => {
         }
         for (let i = 0; i < missedShots.length; i++) {
             const [x, y] = missedShots[i];
-            arr[y * 10 + x] = "miss";
+            arr[y * 10 + x] = "O";
         }
         for (let i = 0; i < hitShots.length; i++) {
             const [x, y] = hitShots[i];
-            arr[y * 10 + x] = "hit";
+            arr[y * 10 + x] = "X";
         }
         return arr;
     };

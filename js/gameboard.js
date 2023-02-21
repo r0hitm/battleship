@@ -112,6 +112,31 @@ const Gameboard = _ => {
         }
     };
 
+    const render = showShips => {
+        const board = document.createElement("div");
+        board.classList.add("board");
+
+        const boardArray = convertToFlatArray();
+        console.assert(
+            boardArray.length === 100,
+            "Board array must be 100 elements long"
+        );
+        for (let i = 0; i < boardArray.length; i++) {
+            const square = document.createElement("div");
+            square.classList.add("square");
+            if (boardArray[i] === "X") {
+                square.classList.add("hit");
+            } else if (boardArray[i] === "O") {
+                square.classList.add("miss");
+            }
+            if (showShips && boardArray[i] === "ship") {
+                square.classList.add("ship");
+            }
+            board.appendChild(square);
+        }
+        return board;
+    };
+
     // Private methods
     // Return the ship at the given coordinate
     const getShipAt = (x, y) => {
@@ -136,6 +161,40 @@ const Gameboard = _ => {
         return ship === null;
     };
 
+    // Return a flat array of 100 elements, where each element is:
+    // - "ship" if there is a ship at that coordinate
+    // - "O" if there is a miss at that coordinate
+    // - "X" if there is a hit at that coordinate
+    // - false if there is nothing at that coordinate
+    const convertToFlatArray = _ => {
+        const arr = [].fill(false, 0, 100);
+        console.assert(
+            arr.length === 100,
+            "covertToFlatArray must have 100 elements"
+        );
+        for (let i = 0; i < shipsAt.length; i++) {
+            const s = shipsAt[i];
+            if (s.isHorizontal) {
+                for (let j = 0; j < s.ship.length; j++) {
+                    arr[s.y * 10 + s.x + j] = "ship";
+                }
+            } else {
+                for (let j = 0; j < s.ship.length; j++) {
+                    arr[(s.y + j) * 10 + s.x] = "ship";
+                }
+            }
+        }
+        for (let i = 0; i < missedShots.length; i++) {
+            const [x, y] = missedShots[i];
+            arr[y * 10 + x] = "miss";
+        }
+        for (let i = 0; i < hitShots.length; i++) {
+            const [x, y] = hitShots[i];
+            arr[y * 10 + x] = "hit";
+        }
+        return arr;
+    };
+
     return {
         placeShip,
         receiveAttack,
@@ -143,6 +202,7 @@ const Gameboard = _ => {
         getMissedShots,
         getHitShots,
         init,
+        render,
         // For testing purposes only
         // getShipAt,
         // canPlaceShip,

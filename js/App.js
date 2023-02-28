@@ -15,3 +15,16 @@ const startGame = document.querySelector("#start");
 const resetGame = document.querySelector("#reset");
 const player = document.querySelector("#player");
 const computer = document.querySelector("#computer");
+
+// Creating Player and Computer objects
+const player1 = Player("Player");
+const computer1 = Player("Computer");
+
+// Creating Gameboard objects for both players
+const playerBoard = Gameboard();
+const computerBoard = Gameboard();
+
+playerBoard.init();
+computerBoard.init();
+
+player.appendChild(playerBoard.render(false));

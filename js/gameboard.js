@@ -100,6 +100,8 @@ const Gameboard = _ => {
         }
     };
 
+    // render the gameboard
+    // showShips: true to show ships, false to hide ships
     const render = showShips => {
         const board = document.createElement("div");
         board.classList.add("board");

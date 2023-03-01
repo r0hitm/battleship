@@ -37,7 +37,8 @@ const Player = n => {
 
     // Render the player's gameboard
     // If showShips is true, show the ships on the gameboard
-    const render = showShips => {
+    // If userAttackable is true, allow the user to be attacked
+    const render = (showShips, userAttackable) => {
         const divPlayer = document.createElement("div");
         divPlayer.classList.add("board-wrapper");
 
@@ -45,7 +46,7 @@ const Player = n => {
         h3PlayerName.textContent = name;
         divPlayer.appendChild(h3PlayerName);
 
-        const divGameboard = gameboard.render(showShips);
+        const divGameboard = gameboard.render(showShips, userAttackable);
         divPlayer.appendChild(divGameboard);
 
         return divPlayer;

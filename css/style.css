@@ -18,9 +18,6 @@ body {
 }
 
 /* Board */
-.player {
-    position: relative;
-}
 
 .board {
     display: grid;
@@ -36,7 +33,7 @@ body {
     border: 1px solid black;
 }
 
-.square:hover:not(.ship, .miss) {
+.square:hover:not(.miss,.hit) {
     background: #44fa;
 }
 
@@ -46,19 +43,17 @@ body {
 }
 
 .miss, .hit {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 .hit {
-    background: url("../img/x.png");
+    background-image: url("../img/x.png");
 }
 
 .miss {
-    background: url("../img/o.png");
+    background-image: url("../img/o.png");
 }
 
 /* ---------------- */
@@ -76,7 +71,7 @@ h1 {
     top: -10px;
 }
 
-#status {
+.status {
     display: flex;
     align-items: center;
     background: rgba(85, 85, 255, 0.119);
@@ -93,37 +88,26 @@ button {
     cursor: pointer;
 }
 
-.play-area {
+#play-area {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    margin-bottom: 50px;
 }
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* .container {} */
-
-.bar#controls {
+.btn-group {
     margin: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* width: 80%; */
-    /* height: 50px; */
-    /* background: #55f4; */
-    /* border-radius: 10px; */
 }
 
-.bar#controls button {
+.btn-group button {
     margin: 0 10px;
     font-size: 1rem;
 }
 
-.bar#controls button:hover {
+.btn-group button:hover {
     background: #44fa;
 }
 

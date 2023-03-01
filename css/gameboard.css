@@ -1,0 +1,36 @@
+.board {
+    display: grid;
+    grid: repeat(10, var(--sq-size)) / repeat(10, var(--sq-size));
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    background: #55f4;
+    cursor:pointer;
+}
+
+.square {
+    border: 1px solid black;
+}
+
+.square:hover:not(.miss,.hit) {
+    background: #44fa;
+}
+
+.ship {
+    background: #555;
+    border: none;
+}
+
+.miss, .hit {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hit {
+    background-image: url("../img/x.png");
+}
+
+.miss {
+    background-image: url("../img/o.png");
+}

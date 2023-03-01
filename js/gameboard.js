@@ -20,7 +20,7 @@
  * - isHorizontal: true if the ship is horizontal, false if vertical
  *
  */
-import availableShips from "./availableShips.js";
+import presets from "./availableShips.js";
 
 const Gameboard = _ => {
     const shipsAt = []; // Array of ships on the gameboard
@@ -86,18 +86,9 @@ const Gameboard = _ => {
     const getMissedShots = _ => missedShots;
     const getHitShots = _ => hitShots;
 
-    // Initialize the gameboard with 4 ships of length 1, 3 ships of length 2, 2 ships of length 3, and 1 ship of length 4
-    const init = _ => {
-        // Randomly place ships on the gameboard
-        for (let i = 0; i < availableShips.length; i++) {
-            const ship = availableShips[i];
-            let x, y, isHorizontal;
-            do {
-                x = Math.floor(Math.random() * 10);
-                y = Math.floor(Math.random() * 10);
-                isHorizontal = Math.random() < 0.5;
-            } while (!placeShip(ship, x, y, isHorizontal));
-        }
+    // place random ships on the gameboard
+    const placeRandom = _ => {
+        shipsAt = presets[Math.floor(Math.random() * presets.length)];
     };
 
     // render the gameboard
@@ -193,7 +184,7 @@ const Gameboard = _ => {
         allShipsSunk,
         getMissedShots,
         getHitShots,
-        init,
+        placeRandom,
         render,
         // For testing purposes only
         // getShipAt,

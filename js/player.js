@@ -18,7 +18,7 @@ const Player = n => {
     const name = n;
     let isTurn = false;
     let gameboard = Gameboard();
-    gameboard.init();
+    gameboard.placeRandom();
 
     console.assert(
         typeof gameboard === "object" &&
@@ -39,14 +39,14 @@ const Player = n => {
     // If showShips is true, show the ships on the gameboard
     const render = showShips => {
         const divPlayer = document.createElement("div");
-        divPlayer.classList.add("player");
+        divPlayer.classList.add("board-wrapper");
 
         const h3PlayerName = document.createElement("h3");
         h3PlayerName.textContent = name;
         divPlayer.appendChild(h3PlayerName);
 
         const divGameboard = gameboard.render(showShips);
-        divGameboardWrapper.appendChild(divGameboard);
+        divPlayer.appendChild(divGameboard);
 
         return divPlayer;
     };

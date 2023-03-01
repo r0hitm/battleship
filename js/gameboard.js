@@ -20,10 +20,10 @@
  * - isHorizontal: true if the ship is horizontal, false if vertical
  *
  */
-import presets from "./availableShips.js";
+import { presets } from "./availableShips.js";
 
 const Gameboard = _ => {
-    const shipsAt = []; // Array of ships on the gameboard
+    let shipsAt = []; // Array of ships on the gameboard
     let missedShots = []; // Shots that missed all ships
     let hitShots = []; // Shots that hit a ship
 
@@ -150,10 +150,10 @@ const Gameboard = _ => {
     // - "X" if there is a hit at that coordinate
     // - false if there is nothing at that coordinate
     const convertToFlatArray = _ => {
-        const arr = [].fill(false, 0, 100);
+        const arr = new Array(100).fill(false);
         console.assert(
             arr.length === 100,
-            "covertToFlatArray must have 100 elements"
+            "In covertToFlatArray arr does not have 100 elements"
         );
         for (let i = 0; i < shipsAt.length; i++) {
             const s = shipsAt[i];

@@ -106,9 +106,18 @@ const Gameboard = _ => {
             const square = document.createElement("div");
             square.classList.add("square");
             square.setAttribute("data-index", i);
+            square.addEventListener("click", e => {
+                const index = square.getAttribute("data-index");
+                const x = index % 10;
+                const y = Math.floor(index / 10);
+                // console.log(`Clicked on square ${x}, ${y}`);
+                receiveAttack(x, y);
+                // render(showShips);
+            });
 
             if (boardArray[i] === "X") {
                 square.classList.add("hit");
+                // square.removeEventListener("click", sqClicked());
             } else if (boardArray[i] === "O") {
                 square.classList.add("miss");
             } else if (showShips && boardArray[i] === "ship") {

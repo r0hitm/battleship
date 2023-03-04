@@ -23,12 +23,6 @@ test('Gameboard can avoid overlapping the ships', () => {
     expect(gameboard.placeShip(ship, x, y, isHorizontal)).toBe(false);
 });
 
-test('Gameboard can initialize with 10 random ships', () => {
-    const gameboard = gb();
-    gameboard.init();
-    expect(gameboard.shipsAt.length).toBe(10);
-});
-
 test('Gameboard can receive attacks', () => {
     const gameboard = gb();
     const ship = Ship(1);

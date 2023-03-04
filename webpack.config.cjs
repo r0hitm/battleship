@@ -41,6 +41,11 @@ module.exports = {
                     filename: "img/[name]-[hash][ext]",
                 },
             },
+            {
+                test: /\.json$/i,
+                use: "json-loader",
+                type: "javascript/auto",
+            }
         ],
     },
     optimization: {

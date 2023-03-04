@@ -1,0 +1,9 @@
+{
+    "intro": "Your ships are ready, commander. Begin the attack when ready.",
+    "humanTurn": "Your turn to attack, commander.",
+    "computerTurn": "The enemy is attacking.",
+    "humanWin": "You have won the battle, commander.",
+    "computerWin": "The enemy has won the battle.",
+    "rearrange": "Rearrange your ships.",
+    "outOfShips": "You have no more ships to place."
+}

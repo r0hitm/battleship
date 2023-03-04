@@ -1,5 +1,5 @@
 {
-    "intro": "Your ships are ready, commander. Begin the attack when ready.",
+    "gameStart": "Your ships are ready, commander. Begin the attack when ready.",
     "humanTurn": "Your turn to attack, commander.",
     "computerTurn": "The enemy is attacking.",
     "humanWin": "You have won the battle, commander.",

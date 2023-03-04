@@ -37,8 +37,8 @@ const Player = n => {
     const setGameboard = g => (gameboard = g); // To let the player set their own gameboard
 
     // Render the player's gameboard
-    // If showShips is true, show the ships on the gameboard
-    // If userAttackable is true, allow the user to be attacked
+    // @param {boolean} showShips - true to show ships, false to hide ships
+    // @returns {object} - DOM element
     const render = (showShips = false) => {
         const divPlayer = document.createElement("div");
         divPlayer.classList.add("board-wrapper");

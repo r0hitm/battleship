@@ -12,64 +12,41 @@ import messages from "./messages.json";
 
 import availableShips from "./availableShips.js";
 
+let playing = false; // Is the game currently running?
+const players = { human: null, computer: null };
+
 // Accessing DOM elements
-const playArea = document.querySelector("#play-area");
+const status = document.querySelector("#status");
+const playerBoard = document.querySelector("#player");
+const computerBoard = document.querySelector("#computer");
 const startGame = document.querySelector("#start");
 const stopBtn = document.querySelector("#stop");
-const player = document.querySelector("#player");
-const computer = document.querySelector("#computer");
-const status = document.querySelector("#status");
-
-// Event Listeners
-startGame.addEventListener("click", _ => {
-    console.log("Start Game: TODO");
-    playGame(); // TODO
-});
-
-stopBtn.addEventListener("click", _ => {
-    console.log("Reset Game: TODO");
-    stopGame();
-});
-
-player.addEventListener("click", _ => {
-    console.log("Player Clicked");
-    // player.innerHTML = "";
-    // player.appendChild(player1.render(true));
-});
-
-computer.addEventListener("click", e => {
-    // console.log("Computer Clicked");
-    const targetIndex = e.target.getAttribute("data-index");
-    console.assert(
-        targetIndex !== null,
-        "Player clicked on null square on computer's board"
-    );
-
-    const x = targetIndex % 10;
-    const y = Math.floor(targetIndex / 10);
-    // console.log(`Player clicked on square ${x}, ${y}`);
-    if (player1.isMyTurn()) {
-        computer1.receiveAttack(x, y);
-        player1.endTurn();
-        computer1.startTurn();
-    }
-
-    computer.innerHTML = "";
-    computer.appendChild(computer1.render(false, true));
-});
-
-// ------------------------------
 
 // Initialize the game
 const init = _ => {
     // const playerName = prompt("Enter your name: ", "Player");
-    const playerName = "Player"; // TODO: Remove this line
+    const playerName = "Human"; // TODO: Remove this line
 
     // Creating Player and Computer objects
-    const player1 = Player(playerName);
-    player1.startTurn(); // Player starts first
+    const human = Player(playerName);
+    const comp = Player("Computer");
+    playing = true;
+    players.human = human;
+    players.computer = comp;
 
-    const computer1 = Player("Computer");
+    updateGameboard();
+    // console.log("Game started");
+};
+
+// End the game
+const endGame = _ => {
+    playing = false;
+    status.textContent = messages.gameEnded;
+    // who won?
+    // todo
+    players.human = null;
+    players.computer = null;
+    console.log("Game ended");
 };
 
 // TODO: !!!
@@ -77,27 +54,68 @@ const init = _ => {
 // Player has set their own gameboard (user input)
 // Computer has set their own gameboard (randomly)
 
-// !!!
-const playGame = _ => {
-    init(); // Initialize the game
-
-    // player1.startTurn();    // Player starts first (This is an Event Listener)
-    playArea.addEventListener("click", _ => {
-        console.log("Play Area Clicked");
-    });
-    player.appendChild(player1.render(true));
-    computer.appendChild(computer1.render(false, true));
+const updateGameboard = _ => {
+    console.log("Updating gameboard");
+    playerBoard.innerHTML = "";
+    playerBoard.appendChild(players.human.render(true));
+    computerBoard.innerHTML = "";
+    computerBoard.appendChild(players.computer.render(false));
 };
 
-// !!!
-const stopGame = _ => {
-    // TODO: clear the board + reset the page
-    player1.innerHTML = '';
-    computer1.innerHTML = '';
+const gameLoop = clickEvent => {
+    console.log("Game Loop called");
+    if (!playing) return;
+    console.assert(
+        players.human !== null && players.computer !== null,
+        "Players are not initialized"
+    );
+
+    const square = clickEvent.target.getAttribute("data-index");
+    console.assert(
+        square !== null,
+        "Issue with retrieving data-index attribute"
+    );
+
+    const x = square % 10;
+    const y = Math.floor(square / 10);
+    // console.log(`Player clicked on square ${x}, ${y}`);
+
+    // Computer takes damage
+    players.computer.receiveAttack(x, y);
+    updateGameboard();
+
+    // does computer lose? -> end game
+    if (players.computer.isLost()) {
+        console.log("Computer lost");
+        playing = false;
+        status.textContent = messages.computerLost;
+        return;
+    }
+    // message update
+    status.textContent = messages.computerTurn;
+    // player takes damage
+    players.human.receiveAttack(
+        Math.floor(Math.random() * 10),
+        Math.floor(Math.random() * 10)
+    );
+    updateGameboard();
+    
+    // does player lose? -> end game
+    if (players.human.isLost()) {
+        console.log("Player lost");
+        playing = false;
+        status.textContent = messages.playerLost;
+        return;
+    }
+    // message update
+    status.textContent = messages.playerTurn;
 };
 
-// ------------------------------
+// Event listeners
+startGame.addEventListener("click", init);
+stopBtn.addEventListener("click", endGame);
 
-// testing:
-console.log(status);
-status.textContent = messages.intro;
+// Game loop follows the player's turn
+// which is fired by player when they click on computer's board
+// user turn -> computer turn -> user turn -> computer turn -> ...
+computerBoard.addEventListener("click", gameLoop);

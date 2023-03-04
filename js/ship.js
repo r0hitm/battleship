@@ -15,7 +15,13 @@ const Ship = l => {
 
     let hitCount = 0;
     const isSunk = _ => hitCount === length;
-    const hit = _ => hitCount++;
+    const hit = _ => {
+        if (isSunk()) {
+            return false;
+        }
+        hitCount++;
+        return true;
+    };
     return { length, hit, isSunk };
 };
 

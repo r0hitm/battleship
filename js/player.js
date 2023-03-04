@@ -17,7 +17,7 @@ const Player = n => {
     console.assert(typeof n === "string", "Player name must be a string");
 
     const name = n;
-    // let isTurn = false;
+    let isTurn = false;
     let gameboard = Gameboard();
     gameboard.placeRandom();
 
@@ -28,9 +28,9 @@ const Player = n => {
         "Gameboard is undefined"
     );
 
-    // const startTurn = _ => (isTurn = true);
-    // const endTurn = _ => (isTurn = false);
-    // const isMyTurn = _ => isTurn;
+    const startTurn = _ => (isTurn = true);
+    const endTurn = _ => (isTurn = false);
+    const isMyTurn = _ => isTurn;
 
     const receiveAttack = (x, y) => gameboard.receiveAttack(x, y);
     const isLost = _ => gameboard.allShipsSunk();
@@ -58,9 +58,9 @@ const Player = n => {
         receiveAttack,
         isLost,
         setGameboard,
-        // startTurn,
-        // endTurn,
-        // isMyTurn,
+        startTurn,
+        endTurn,
+        isMyTurn,
         render,
     };
 };

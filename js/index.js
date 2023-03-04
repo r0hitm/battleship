@@ -32,6 +32,7 @@ const init = _ => {
 
     // Creating Player and Computer objects
     const human = Player(playerName);
+    human.startTurn();
     const comp = Player("Computer");
     playing = true;
     players.human = human;
@@ -82,8 +83,7 @@ const displayMessage = message => {
 
 async function gameLoop(clickEvent) {
     console.log("Game Loop called");
-    if (!playing)
-        return;
+    if (!playing) return;
     console.assert(
         players.human !== null && players.computer !== null,
         "Players are not initialized"
@@ -98,37 +98,43 @@ async function gameLoop(clickEvent) {
     const x = square % 10;
     const y = Math.floor(square / 10);
     // console.log(`Player clicked on square ${x}, ${y}`);
-    // Computer takes damage
-    let attackStatus = players.computer.receiveAttack(x, y);
-    // console.log({ attackStatus });
-    updateGameboard();
 
-    // does computer lose? -> end game
-    if (players.computer.isLost()) {
-        endGame();
-        // playing = false;
-        return;
+    if (players.human.isMyTurn()) {
+        players.human.endTurn();
+
+        // Computer takes damage
+        let attackStatus = players.computer.receiveAttack(x, y);
+        // console.log({ attackStatus });
+        updateGameboard();
+
+        // does computer lose? -> end game
+        if (players.computer.isLost()) {
+            endGame();
+            // playing = false;
+            return;
+        }
+
+        displayMessage(messages.computerTurn);
+        await delay(2000);
+
+        // player takes damage
+        attackStatus = players.human.receiveAttack(
+            Math.floor(Math.random() * 10),
+            Math.floor(Math.random() * 10)
+        );
+        // console.log({ attackStatus });
+        updateGameboard();
+
+        // does player lose? -> end game
+        if (players.human.isLost()) {
+            endGame();
+            // playing = false;
+            return;
+        }
+
+        displayMessage(messages.humanTurn);
+        players.human.startTurn();
     }
-
-    displayMessage(messages.computerTurn);
-    await delay(2000);
-
-    // player takes damage
-    attackStatus = players.human.receiveAttack(
-        Math.floor(Math.random() * 10),
-        Math.floor(Math.random() * 10)
-    );
-    // console.log({ attackStatus });
-    updateGameboard();
-
-    // does player lose? -> end game
-    if (players.human.isLost()) {
-        endGame();
-        // playing = false;
-        return;
-    }
-
-    displayMessage(messages.humanTurn);
 }
 
 // Event listeners

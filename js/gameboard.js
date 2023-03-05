@@ -68,6 +68,10 @@ const Gameboard = _ => {
         console.assert(x >= 0 && x < 10, "x must be between 0 and 9");
         console.assert(y >= 0 && y < 10, "y must be between 0 and 9");
 
+        if (isMissedShot(x, y) || isHitShot(x, y)) {
+            return false;
+        }
+
         const ship = getShipAt(x, y);
         if (ship) {
             ship.hit();
@@ -89,7 +93,12 @@ const Gameboard = _ => {
 
     // place random ships on the gameboard
     const placeRandom = _ => {
-        shipsAt = presets[Math.floor(Math.random() * presets.length)];
+        // const presetCopy = presets.slice();
+        const randomIndex = Math.floor(Math.random() * presets.length);
+        // shipsAt = presetCopy[randomIndex];
+        // Using slice makes a copy of the array, so we don't modify the original presets array
+        // don't know if this is necessary
+        shipsAt = presets.slice(randomIndex, randomIndex + 1)[0]; // get a random preset
     };
 
     // render the gameboard
@@ -178,6 +187,26 @@ const Gameboard = _ => {
             arr[y * 10 + x] = "X";
         }
         return arr;
+    };
+
+    const isMissedShot = (x, y) => {
+        for (let i = 0; i < missedShots.length; i++) {
+            const [mx, my] = missedShots[i];
+            if (mx === x && my === y) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const isHitShot = (x, y) => {
+        for (let i = 0; i < hitShots.length; i++) {
+            const [hx, hy] = hitShots[i];
+            if (hx === x && hy === y) {
+                return true;
+            }
+        }
+        return false;
     };
 
     return {

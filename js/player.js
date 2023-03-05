@@ -35,6 +35,7 @@ const Player = n => {
     const receiveAttack = (x, y) => gameboard.receiveAttack(x, y);
     const isLost = _ => gameboard.allShipsSunk();
     const setGameboard = g => (gameboard = g); // To let the player set their own gameboard
+    const getGameboard = _ => gameboard;
 
     // Render the player's gameboard
     // @param {boolean} showShips - true to show ships, false to hide ships
@@ -58,6 +59,7 @@ const Player = n => {
         receiveAttack,
         isLost,
         setGameboard,
+        getGameboard,
         startTurn,
         endTurn,
         isMyTurn,

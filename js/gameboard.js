@@ -217,6 +217,8 @@ const Gameboard = _ => {
         getHitShots,
         placeRandom,
         render,
+        isHitShot,
+        isMissedShot,
         // For testing purposes only
         // getShipAt,
         // canPlaceShip,

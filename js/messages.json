@@ -1,11 +1,11 @@
 {
     "gameStart": "Your ships are ready, commander. Begin the attack when ready.",
-    "humanTurn": "Your turn to attack, commander.",
-    "computerTurn": "The enemy is attacking.",
-    "humanWin": "You have won the battle, commander.",
-    "computerWin": "The enemy has won the battle.",
+    "humanTurn": "Attack, commander.",
+    "computerTurn": "Incoming enemy attack, commander.",
+    "humanWon": "You Won, commander ^_^",
+    "computerWon": "You Lost, commander :(",
     "rearrange": "Rearrange your ships.",
     "outOfShips": "You have no more ships to place.",
-    "miss": "You missed, commander. Enemy's turn!",
-    "computerMiss": "The enemy missed. Lucky you!"
+    "humanMiss": "You Missed. Enemy's turn!",
+    "computerMiss": "Enemy Missed. Your turn!"
 }

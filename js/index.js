@@ -10,6 +10,7 @@ import messages from "./messages.json";
 // import Gameboard from "./gameboard.js";
 // import Ship from "./ship.js";
 // import {presets} from "./availableShips.js";
+const typingSpeed = 40; // ms
 
 let playing = false; // Is the game currently running?
 const players = { human: null, computer: null };
@@ -60,9 +61,12 @@ const updateGameboard = _ => {
 // Displays text messages to the user
 // With character by character typing effect
 // @param {string} message - message to be displayed
-const displayMessage = message => {
-    // TODO: add typing effect
-    status.textContent = message;
+const displayMessage = (message, i = 0) => {
+    if (i < message.length) {
+        if (i === 0) status.textContent = ""; // clear previous message
+        status.textContent += message.charAt(i);
+        setTimeout(displayMessage, typingSpeed, message, i + 1);
+    }
 };
 
 async function gameLoop(clickEvent) {
@@ -106,7 +110,7 @@ async function gameLoop(clickEvent) {
             displayMessage(messages.humanMiss);
         }
 
-        await delay(2000);
+        await delay(3000);
 
         // player takes damage
         players.computer.startTurn();

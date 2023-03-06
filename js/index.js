@@ -9,7 +9,7 @@ import messages from "./messages.json";
 
 // import Gameboard from "./gameboard.js";
 // import Ship from "./ship.js";
-// import availableShips from "./availableShips.js";
+// import {presets} from "./availableShips.js";
 
 let playing = false; // Is the game currently running?
 const players = { human: null, computer: null };
@@ -19,19 +19,9 @@ const status = document.querySelector("#status");
 const playerBoard = document.querySelector("#player");
 const computerBoard = document.querySelector("#computer");
 const playBtn = document.querySelector("#start");
-// const stopBtn = document.querySelector("#stop");
 
 // helper functions:
 const delay = ms => new Promise(res => setTimeout(res, ms));
-
-const reset = _ => {
-    playing = false;
-    players.human = null;
-    players.computer = null;
-    // status.textContent = "";
-    // playerBoard.innerHTML = "";
-    // computerBoard.innerHTML = "";
-};
 
 // Initialize the game
 const init = _ => {
@@ -81,59 +71,67 @@ async function gameLoop(clickEvent) {
         "Players are not initialized"
     );
 
-    const square = clickEvent.target.getAttribute("data-index");
+    const square = parseInt(clickEvent.target.getAttribute("data-index"));
     console.assert(
         square !== null,
         "Issue with retrieving data-index attribute"
     );
-
-    const cx = square % 10;
-    const cy = Math.floor(square / 10);
-    // console.log(`Player clicked on square ${x}, ${y}`);
+    if (square === null) return; // click and drag usually causes this
 
     if (players.human.isMyTurn()) {
         players.human.endTurn();
         let attackStatus = false;
+        const cx = square % 10;
+        const cy = Math.floor(square / 10);
+        // console.log(`Player clicked on square ${x}, ${y}`);
 
         // Computer takes damage
         attackStatus = players.computer.receiveAttack(cx, cy);
+        updateGameboard();
         if (attackStatus) {
             // console.log("Computer takes damage", { attackStatus });
-            updateGameboard();
-
             // does computer lose? -> end game
             if (players.computer.isLost()) {
                 console.log("Computer lost");
+                playing = false; // end game
                 displayMessage(messages.humanWon);
                 return;
             }
 
             displayMessage(messages.computerTurn);
+            attackStatus = false; // reset attackStatus
+        } else {
+            // Player misses
+            displayMessage(messages.humanMiss);
         }
-        // Player misses
-        displayMessage(messages.miss);
 
-        // await delay(2000);
+        await delay(2000);
 
         // player takes damage
-        attackStatus = false;
-        const hx = Math.floor(Math.random() * 10);
-        const hy = Math.floor(Math.random() * 10);
+        players.computer.startTurn();
+        const i = Math.floor(Math.random() * 100);
+        const hx = i % 10;
+        const hy = Math.floor(i / 10);
         attackStatus = players.human.receiveAttack(hx, hy);
+        updateGameboard();
         if (attackStatus) {
-            console.log("Human takes damage", { attackStatus });
-            updateGameboard();
-
+            // console.log("Human takes damage", { attackStatus });
             // does player lose? -> end game
             if (players.human.isLost()) {
                 console.log("Player lost");
+                playing = false; // end game
                 displayMessage(messages.computerWon);
                 return;
             }
+
+            displayMessage(messages.humanTurn);
+            // attackStatus = false;   // reset attackStatus
+        } else {
+            // Computer misses
+            displayMessage(messages.computerMiss);
         }
 
-        displayMessage(messages.computerMiss + messages.humanTurn);
-        // displayMessage(messages.humanTurn);
+        players.computer.endTurn();
         players.human.startTurn();
     }
 }
@@ -147,17 +145,11 @@ playBtn.addEventListener("click", _ => {
     } else if (startGameText === "Restart") {
         window.location.reload();
     } else {
-        console.error("Invalid button text");
+        console.error("Impossible Error: Invalid button text");
     }
 });
-// stopBtn.addEventListener("click", endGame);
 
 // Game loop follows the player's turn
 // which is fired by player when they click on computer's board
 // user turn -> computer turn -> user turn -> computer turn -> ...
 computerBoard.addEventListener("click", gameLoop);
-
-// window.addEventListener("load", _ => {
-//     console.log("Game loaded");
-//     displayMessage(messages.gameStart);
-// });

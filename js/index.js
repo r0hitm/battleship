@@ -13,12 +13,13 @@ import messages from "./messages.json";
 
 let playing = false; // Is the game currently running?
 const players = { human: null, computer: null };
+const computerAttackQueue = [];
 
 // Accessing DOM elements
 const status = document.querySelector("#status");
 const playerBoard = document.querySelector("#player");
 const computerBoard = document.querySelector("#computer");
-const playBtn = document.querySelector("#start");
+const playBtn = document.querySelector("#play");
 
 // helper functions:
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -110,12 +111,36 @@ async function gameLoop(clickEvent) {
         // player takes damage
         players.computer.startTurn();
         const i = Math.floor(Math.random() * 100);
-        const hx = i % 10;
-        const hy = Math.floor(i / 10);
+        let hx = i % 10;
+        let hy = Math.floor(i / 10);
+        if (computerAttackQueue.length > 0) {
+            const el = computerAttackQueue.shift();
+            hx = el[0];
+            hy = el[1];
+        }
         attackStatus = players.human.receiveAttack(hx, hy);
         updateGameboard();
         if (attackStatus) {
             // console.log("Human takes damage", { attackStatus });
+            const nextMoves = [
+                [hx - 1, hy],
+                [hx, hy - 1],
+                [hx + 1, hy],
+                [hx, hy + 1],
+            ].filter(m => {
+                const x = m[0];
+                const y = m[1];
+                return (
+                    x >= 0 &&
+                    x < 10 &&
+                    y >= 0 &&
+                    y < 10 &&
+                    !players.human.getGameboard().isMissedShot(x, y) &&
+                    !players.human.getGameboard().isHitShot(x, y)
+                );
+            });
+            computerAttackQueue.push(...nextMoves);
+
             // does player lose? -> end game
             if (players.human.isLost()) {
                 console.log("Player lost");

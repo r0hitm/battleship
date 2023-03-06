@@ -1,3 +1,6 @@
+:root {
+    --sq-size: 30px;
+}
 .board {
     display: grid;
     grid: repeat(10, var(--sq-size)) / repeat(10, var(--sq-size));

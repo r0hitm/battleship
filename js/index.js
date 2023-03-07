@@ -65,7 +65,7 @@ const play = _ => {
 
     overlayWrapper.classList.remove("hidden");
 
-    randomizeBtn.addEventListener("click", init);
+    randomizeBtn.addEventListener("click", _ => init());
     clearBtn.addEventListener("click", clearGameboard);
 
     inputBoardSq.forEach(sq => {

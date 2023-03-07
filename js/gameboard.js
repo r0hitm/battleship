@@ -209,6 +209,13 @@ const Gameboard = _ => {
         return false;
     };
 
+    // clear the gameboard
+    const clear = _ => {
+        shipsAt = [];
+        missedShots = [];
+        hitShots = [];
+    };
+
     return {
         placeShip,
         receiveAttack,
@@ -219,6 +226,7 @@ const Gameboard = _ => {
         render,
         isHitShot,
         isMissedShot,
+        clear,
         // For testing purposes only
         // getShipAt,
         // canPlaceShip,

@@ -10,7 +10,7 @@ import messages from "./messages.json";
 
 import Gameboard from "./gameboard.js";
 // import Ship from "./ship.js";
-import { presets } from "./availableShips.js";
+import { availableShips } from "./availableShips.js";
 const typingSpeed = 40; // ms
 
 let playing = false; // Is the game currently running?
@@ -25,10 +25,11 @@ const playBtn = document.querySelector("#play");
 
 // Accessing Overlay DOM elements
 const overlayWrapper = document.querySelector(".overlay-wrapper");
-const inputBoard = document.querySelector("#input-board");
+// const inputBoard = document.querySelector("#input-board");
 const inputBoardSq = Array.from(
     document.querySelectorAll("#input-board .square")
 );
+// console.log(inputBoardSq);
 const shipParameters = {
     currentShipIndex: 0,
     currentShipLength: 0,
@@ -37,16 +38,16 @@ const shipParameters = {
     // currentShipPosition: -1, // 0 - 99
 };
 const switchBtn = document.querySelector("#switch");
-const shipPlacementIndicator = document.querySelector("#placement");
+const shipPlacementIndicator = {
+    direction: document.querySelector("#placing-direction"),
+    length: document.querySelector("#ship-length"),
+};
 const randomizeBtn = document.querySelector("#randomize");
 const clearBtn = document.querySelector("#clear");
 
-// helper functions:
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
 const clearGameboard = _ => {
     shipParameters.currentShipIndex = 0;
-    shipParameters.currentShipLength = 0;
+    // shipParameters.currentShipLength = 0;
     shipParameters.currentShipOrientation = "X";
     shipParameters.currentShipPlaced = false;
     // shipParameters.currentShipPosition = -1;
@@ -60,16 +61,19 @@ const clearGameboard = _ => {
 const play = _ => {
     // init();
     const gb = Gameboard();
+    // inputBoard.appendChild(gb.render(true));
 
     overlayWrapper.classList.remove("hidden");
+
     randomizeBtn.addEventListener("click", init);
     clearBtn.addEventListener("click", clearGameboard);
+
     inputBoardSq.forEach(sq => {
         sq.addEventListener("click", e => {
             const index = parseInt(sq.getAttribute("data-index"));
             const x = index % 10;
             const y = Math.floor(index / 10);
-            const ship = presets[shipParameters.currentShipIndex];
+            const ship = availableShips[shipParameters.currentShipIndex];
             const isHorizontal = shipParameters.currentShipOrientation === "X";
             shipParameters.currentShipPlaced = gb.placeShip(
                 ship,
@@ -80,48 +84,65 @@ const play = _ => {
 
             if (shipParameters.currentShipPlaced) {
                 // Update the UI
-                for (let i = 0; i < ship.length; i++) {
-                    const index = isHorizontal
-                        ? x + i + y * 10
-                        : x + (y + i) * 10;
-                    inputBoardSq[index].classList.add("ship");
-                }
-                shipParameters.currentShipIndex++;
-                if (shipParameters.currentShipIndex < presets.length) {
-                    shipParameters.currentShipLength =
-                        presets[shipParameters.currentShipIndex].length;
-                    shipPlacementIndicator.textContent =
-                        shipParameters.currentShipLength;
+                if (isHorizontal) {
+                    for (let j = 0; j < ship.length; j++) {
+                        inputBoardSq[y * 10 + x + j].classList.add(
+                            "ship"
+                        );
+                    }
                 } else {
-                    // All ships have been placed
-                    // Hide the overlay
-                    overlayWrapper.classList.add("hidden");
-                    init(gb); // initialize with the gameboard as human player
+                    for (let j = 0; j < ship.length; j++) {
+                        inputBoardSq[(y + j) * 10 + x].classList.add(
+                            "ship"
+                        );
+                    }
                 }
+
+                // update the shipParameters object
+                shipParameters.currentShipIndex++;
+                if (shipParameters.currentShipIndex >= availableShips.length) {
+                    // All ships have been placed
+                    init(gb);
+                }
+                shipParameters.currentShipPlaced = false;
+                shipPlacementIndicator.length.textContent =
+                    availableShips[shipParameters.currentShipIndex].length;
             }
         });
     });
     switchBtn.addEventListener("click", e => {
         if (shipParameters.currentShipOrientation === "X") {
             shipParameters.currentShipOrientation = "Y";
-            shipPlacementIndicator.textContent = "Vertical";
+            shipPlacementIndicator.direction.textContent = "Vertical";
         } else {
             shipParameters.currentShipOrientation = "X";
-            shipPlacementIndicator.textContent = "Horizontal";
+            shipPlacementIndicator.direction.textContent = "Horizontal";
         }
     });
+
+    shipPlacementIndicator.length.textContent =
+        availableShips[shipParameters.currentShipIndex].length;
 };
 
-// Initialize the game
-const init = _ => {
+// helper functions:
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+/**
+ * Initializes the game
+ * @param {humanBoard}  Gameboard object - optional for human player
+ */
+const init = (humanBoard = null) => {
     console.assert(playing === false, "Game is already running");
     console.assert(players.human === null, "Human player already exists");
     console.assert(players.computer === null, "Computer player already exists");
+    overlayWrapper.classList.add("hidden");
+
     // const playerName = prompt("Enter your name: ", "Human");
     const playerName = "Human"; // TODO: Remove this line
 
     // Creating Player and Computer objects
     const human = Player(playerName);
+    if (humanBoard !== null) human.setGameboard(humanBoard);
     human.startTurn();
     const comp = Player("Computer");
     playing = true;

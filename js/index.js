@@ -4,12 +4,13 @@
  * Author: Rohit Mehta
  */
 import "../css/index.css";
+import "../css/overlay.css";
 import Player from "./player.js";
 import messages from "./messages.json";
 
-// import Gameboard from "./gameboard.js";
+import Gameboard from "./gameboard.js";
 // import Ship from "./ship.js";
-// import {presets} from "./availableShips.js";
+import { presets } from "./availableShips.js";
 const typingSpeed = 40; // ms
 
 let playing = false; // Is the game currently running?
@@ -22,8 +23,94 @@ const playerBoard = document.querySelector("#player");
 const computerBoard = document.querySelector("#computer");
 const playBtn = document.querySelector("#play");
 
+// Accessing Overlay DOM elements
+const overlayWrapper = document.querySelector(".overlay-wrapper");
+const inputBoard = document.querySelector("#input-board");
+const inputBoardSq = Array.from(
+    document.querySelectorAll("#input-board .square")
+);
+const shipParameters = {
+    currentShipIndex: 0,
+    currentShipLength: 0,
+    currentShipOrientation: "X",
+    currentShipPlaced: false,
+    // currentShipPosition: -1, // 0 - 99
+};
+const switchBtn = document.querySelector("#switch");
+const shipPlacementIndicator = document.querySelector("#placement");
+const randomizeBtn = document.querySelector("#randomize");
+const clearBtn = document.querySelector("#clear");
+
 // helper functions:
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const clearGameboard = _ => {
+    shipParameters.currentShipIndex = 0;
+    shipParameters.currentShipLength = 0;
+    shipParameters.currentShipOrientation = "X";
+    shipParameters.currentShipPlaced = false;
+    // shipParameters.currentShipPosition = -1;
+
+    inputBoardSq.forEach(sq => {
+        sq.classList.remove("ship");
+    });
+};
+
+// Play button event listener // Overlay event listeners
+const play = _ => {
+    // init();
+    const gb = Gameboard();
+
+    overlayWrapper.classList.remove("hidden");
+    randomizeBtn.addEventListener("click", init);
+    clearBtn.addEventListener("click", clearGameboard);
+    inputBoardSq.forEach(sq => {
+        sq.addEventListener("click", e => {
+            const index = parseInt(sq.getAttribute("data-index"));
+            const x = index % 10;
+            const y = Math.floor(index / 10);
+            const ship = presets[shipParameters.currentShipIndex];
+            const isHorizontal = shipParameters.currentShipOrientation === "X";
+            shipParameters.currentShipPlaced = gb.placeShip(
+                ship,
+                x,
+                y,
+                isHorizontal
+            );
+
+            if (shipParameters.currentShipPlaced) {
+                // Update the UI
+                for (let i = 0; i < ship.length; i++) {
+                    const index = isHorizontal
+                        ? x + i + y * 10
+                        : x + (y + i) * 10;
+                    inputBoardSq[index].classList.add("ship");
+                }
+                shipParameters.currentShipIndex++;
+                if (shipParameters.currentShipIndex < presets.length) {
+                    shipParameters.currentShipLength =
+                        presets[shipParameters.currentShipIndex].length;
+                    shipPlacementIndicator.textContent =
+                        shipParameters.currentShipLength;
+                } else {
+                    // All ships have been placed
+                    // Hide the overlay
+                    overlayWrapper.classList.add("hidden");
+                    init(gb); // initialize with the gameboard as human player
+                }
+            }
+        });
+    });
+    switchBtn.addEventListener("click", e => {
+        if (shipParameters.currentShipOrientation === "X") {
+            shipParameters.currentShipOrientation = "Y";
+            shipPlacementIndicator.textContent = "Vertical";
+        } else {
+            shipParameters.currentShipOrientation = "X";
+            shipPlacementIndicator.textContent = "Horizontal";
+        }
+    });
+};
 
 // Initialize the game
 const init = _ => {
@@ -169,7 +256,7 @@ async function gameLoop(clickEvent) {
 playBtn.addEventListener("click", _ => {
     const startGameText = playBtn.textContent;
     if (startGameText === "Play") {
-        init();
+        play();
         playBtn.textContent = "Restart";
     } else if (startGameText === "Restart") {
         window.location.reload();

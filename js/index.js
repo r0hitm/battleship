@@ -86,23 +86,20 @@ const play = _ => {
                 // Update the UI
                 if (isHorizontal) {
                     for (let j = 0; j < ship.length; j++) {
-                        inputBoardSq[y * 10 + x + j].classList.add(
-                            "ship"
-                        );
+                        inputBoardSq[y * 10 + x + j].classList.add("ship");
                     }
                 } else {
                     for (let j = 0; j < ship.length; j++) {
-                        inputBoardSq[(y + j) * 10 + x].classList.add(
-                            "ship"
-                        );
+                        inputBoardSq[(y + j) * 10 + x].classList.add("ship");
                     }
                 }
 
                 // update the shipParameters object
                 shipParameters.currentShipIndex++;
-                if (shipParameters.currentShipIndex >= availableShips.length) {
+                if (shipParameters.currentShipIndex === availableShips.length) {
                     // All ships have been placed
                     init(gb);
+                    return;
                 }
                 shipParameters.currentShipPlaced = false;
                 shipPlacementIndicator.length.textContent =
@@ -137,8 +134,8 @@ const init = (humanBoard = null) => {
     console.assert(players.computer === null, "Computer player already exists");
     overlayWrapper.classList.add("hidden");
 
-    // const playerName = prompt("Enter your name: ", "Human");
-    const playerName = "Human"; // TODO: Remove this line
+    const playerName = prompt("Enter your name: ", "Human");
+    // const playerName = "Human"; // For testing
 
     // Creating Player and Computer objects
     const human = Player(playerName);
@@ -153,17 +150,12 @@ const init = (humanBoard = null) => {
     updateGameboard();
 };
 
-// TODO: !!!
-// Assume:
-// Player has set their own gameboard (user input)
-// Computer has set their own gameboard (randomly)
-
 const updateGameboard = _ => {
     // console.log("Updating gameboard");
     playerBoard.innerHTML = "";
     playerBoard.appendChild(players.human.render(true));
     computerBoard.innerHTML = "";
-    computerBoard.appendChild(players.computer.render(true)); // TODO: change to false
+    computerBoard.appendChild(players.computer.render(false)); // Hide computer's ships.
 };
 
 // Displays text messages to the user
@@ -218,7 +210,7 @@ async function gameLoop(clickEvent) {
             displayMessage(messages.humanMiss);
         }
 
-        await delay(3000);
+        await delay(2500);
 
         // player takes damage
         players.computer.startTurn();

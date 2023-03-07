@@ -1,0 +1,42 @@
+/* Styles for input.js */
+/* Author: Rohit Mehta */
+
+.overlay-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgb(0,0,0,0.5);
+}
+
+.hidden {
+    display: none;
+}
+
+#input-board {
+    margin: auto;
+}
+
+.overlay {
+    width: 480px;
+/*     height: 90%; */
+    background: #eee;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.ship-parameters {
+    margin:auto;
+}
+
+/* 
+.btn-group {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */

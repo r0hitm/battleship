@@ -63,7 +63,7 @@ button {
     font-size: 1rem;
 }
 
-.btn-group button:hover {
+button:hover {
     background: #44fa;
 }
 

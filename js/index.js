@@ -169,6 +169,7 @@ const displayMessage = (message, i = 0) => {
     }
 };
 
+const alreadyClickedSquares = new Set(); // To prevent double clicking by human player on the same square
 async function gameLoop(clickEvent) {
     if (!playing) return;
     console.assert(
@@ -181,7 +182,8 @@ async function gameLoop(clickEvent) {
         square !== null,
         "Issue with retrieving data-index attribute"
     );
-    if (square === null) return; // click and drag usually causes this
+    if (square === null || alreadyClickedSquares.has(square)) return; // click and drag usually causes this
+    alreadyClickedSquares.add(square);
 
     if (players.human.isMyTurn()) {
         players.human.endTurn();
